@@ -53,7 +53,7 @@ A full-stack Task Manager application built with React, Node.js, Express, and Mo
 | **CSS3** | Styling |
 | **Fetch API** | HTTP requests |
 
-## 📁 Project Structure
+## Project Structure
 
 task-manager-ai-assignment/
 ├── server/
@@ -87,7 +87,6 @@ task-manager-ai-assignment/
 ├── code-review.md
 ├── reflection.md
 └── README.md
-
 
 ## 🔧 Prerequisites
 
