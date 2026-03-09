@@ -20,10 +20,11 @@ function App() {
 
   const checkServerStatus = async () => {
     try {
-
       const res = await fetch(`${API_URL}/health`);
-      const data = await res.json();
 
+      if (!res.ok) throw new Error("Server not responding");
+
+      const data = await res.json();
       console.log(data);
 
       setServerStatus("connected");
@@ -32,84 +33,99 @@ function App() {
     } catch (err) {
       console.error(err);
       setServerStatus("error");
-      setError("Backend server is not running on port 5000");
+      setError("Cannot connect to backend server.");
     }
   };
 
   const fetchTasks = async () => {
     try {
-
       setLoading(true);
 
       const res = await fetch(`${API_URL}/tasks`);
+
+      if (!res.ok) throw new Error("Failed to fetch tasks");
+
       const data = await res.json();
 
-      setTasks(data.data || []);
+      setTasks(data?.data || []);
 
     } catch (err) {
-
       console.error(err);
+      setTasks([]);
       setError("Failed to fetch tasks");
-
     } finally {
       setLoading(false);
     }
   };
 
- const addTask = async (taskData) => {
-  try {
+  const addTask = async (taskData) => {
+    try {
 
-    const res = await fetch(`${API_URL}/tasks`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(taskData)
-    });
+      const res = await fetch(`${API_URL}/tasks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(taskData)
+      });
 
-    const data = await res.json();
+      if (!res.ok) throw new Error("Failed to add task");
 
-    setTasks(prevTasks => [...prevTasks, data.data]);
+      const data = await res.json();
 
-    return { success: true };
+      setTasks(prev => [...prev, data.data]);
 
-  } catch (error) {
+      return { success: true };
 
-    console.error("Add task error:", error);
+    } catch (error) {
 
-    return {
-      success: false,
-      error: "Failed to add task"
-    };
-  }
-};
+      console.error("Add task error:", error);
+
+      return {
+        success: false,
+        error: "Failed to add task"
+      };
+    }
+  };
 
   const toggleTask = async (id) => {
+    try {
 
-    const res = await fetch(`${API_URL}/tasks/${id}/toggle`, {
-      method: "PATCH"
-    });
+      const res = await fetch(`${API_URL}/tasks/${id}/toggle`, {
+        method: "PATCH"
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    setTasks(tasks.map(t => t._id === id ? data.data : t));
+      setTasks(prev =>
+        prev.map(t => t._id === id ? data.data : t)
+      );
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const deleteTask = async (id) => {
+    try {
 
-    await fetch(`${API_URL}/tasks/${id}`, {
-      method: "DELETE"
-    });
+      await fetch(`${API_URL}/tasks/${id}`, {
+        method: "DELETE"
+      });
 
-    setTasks(tasks.filter(t => t._id !== id));
+      setTasks(prev => prev.filter(t => t._id !== id));
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const filteredTasks = tasks.filter(task => {
+  const filteredTasks = (tasks || []).filter(task => {
+    if (!task) return false;
 
     if (filter === "active") return !task.completed;
     if (filter === "completed") return task.completed;
     return true;
-
   });
 
   if (serverStatus === "checking") {
