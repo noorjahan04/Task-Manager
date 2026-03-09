@@ -4,7 +4,7 @@ import TaskForm from "./components/TaskForm";
 import FilterButtons from "./components/FilterButtons";
 import "./index.css";
 
-const API_URL = "https://task-manager-2x5w.onrender.com/api";
+const API_URL = "https://task-manager-l68w.onrender.com/api";
 
 function App() {
 
