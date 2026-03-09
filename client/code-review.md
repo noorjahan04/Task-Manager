@@ -131,8 +131,8 @@ const getTask = async (req, res, next) => {
 
 ## Bonus: AI Self-Review
 
-When I asked Copilot to review the TaskItem component, it identified:
+- When I asked Copilot to review the TaskItem component, it identified:
 
-Accessibility Issue: Missing ARIA labels for interactive elements
+- Accessibility Issue: Missing ARIA labels for interactive elements
 
-Date Formatting: Hardc
+- Date Formatting: Hardc
